@@ -1,87 +1,94 @@
 package com.amazon.ecommerce.services.products;
 
 import java.util.List;
+import java.util.Locale.Category;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amazon.ecommerce.exceptions.ProductNotFoundException;
 import com.amazon.ecommerce.models.Product;
-import com.amazon.ecommerce.reposotiry.ProductReposotiry;
+import com.amazon.ecommerce.repository.ProductRepository;
+import com.amazon.ecommerce.requests.AddProductRequest;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor  // for autowiring (injecting) final fields
 public class ProductService implements IProductService{
 
-    private ProductReposotiry productReposotiry;
+    private final ProductRepository productRepository;
 
-    // @Autowired
-    // public ProductService( ProductReposotiry productReposotiry){
-    //     this.productReposotiry = productReposotiry;
-    // }
-
-    
     @Override
     public List<Product> getALlProducts() {
-        return productReposotiry.findAll();
+        return productRepository.findAll();
     }
     
     @Override
     public Product getProductById(Long id) {
-        return productReposotiry.findById(id)
+        return productRepository.findById(id)
         .orElseThrow(()-> new ProductNotFoundException("product not found with id " + id));
     }
 
     @Override
     public Product addProduct(Product product) {
-        // productReposotiry.save(product);
+        // productRepository.save(product);
         return null;
+    }
+
+    public Product createProduct(AddProductRequest request, Category category){
+
+        return new Product(
+            request.getName(),
+            request.getBrand(),
+            request.getPrice(),
+            request.getDescription(),
+            request.getQuantity(),
+            request.getCategory()
+            // category.get
+        );
     }
 
     @Override
     public Product updateProduct(long id) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateProduct'");
     }
 
     @Override
     public void deleteProductById(Long id) {
-        productReposotiry.findById(id).
-        ifPresentOrElse(productReposotiry::delete, 
+        productRepository.findById(id).
+        ifPresentOrElse(productRepository::delete, 
         ()-> new ProductNotFoundException("product not found with id " + id));;
     }
 
 
     @Override
     public List<Product> getProductsByCategoryName(String category) {
-        return productReposotiry.findByCategoryName(category);
+        return productRepository.findByCategoryName(category);
     }
 
     @Override
     public List<Product> getProductsByBrand(String brand) {
-        return productReposotiry.findByBrand(brand);
+        return productRepository.findByBrand(brand);
     }
 
     @Override
     public List<Product> getProductsByCategoryAndBrand(String category, String brand) {
-        return productReposotiry.findByCategoryAndBrand(category, brand);
+        return productRepository.findByCategoryAndBrand(category, brand);
     }
 
     @Override
     public List<Product> getProductsByName(String name) {
-        return productReposotiry.findByName(name);
+        return productRepository.findByName(name);
     }
 
     @Override
     public List<Product> getProductsByNameAndBrand(String brand, String name) {
-        return productReposotiry.findByNameAndBrand(brand, name);
+        return productRepository.findByNameAndBrand(brand, name);
     }
 
     @Override
     public Long CountByBrandAndName(String brand, String name) {
-        return productReposotiry.CountByBrandAndName(brand, name);
+        return productRepository.CountByBrandAndName(brand, name);
     }
 
 

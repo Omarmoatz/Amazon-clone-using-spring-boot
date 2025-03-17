@@ -1,4 +1,4 @@
-package com.amazon.ecommerce.reposotiry;
+package com.amazon.ecommerce.repository;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.amazon.ecommerce.models.Product;
 
 
-public interface ProductReposotiry extends JpaRepository<Product,Long>{
+public interface ProductRepository extends JpaRepository<Product,Long>{
 
     List<Product> findByCategoryName(String category);
 
