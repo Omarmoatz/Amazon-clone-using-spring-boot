@@ -3,7 +3,6 @@ package com.amazon.ecommerce.services.categories;
 import java.util.List;
 
 import com.amazon.ecommerce.models.Category;
-import com.amazon.ecommerce.models.Product;
 
 
 public interface ICategoryService {
@@ -11,7 +10,7 @@ public interface ICategoryService {
     Category findByName(String name);
     List<Category> findAll();
 
-    Product addProduct(Product product);
-    Product updateProduct(Product product);
-    String deleteProductById(long id);
+    Category addCategory(Category category);
+    Category updateCategory(Category category, long id);
+    String deleteCategoryById(long id);
 }
