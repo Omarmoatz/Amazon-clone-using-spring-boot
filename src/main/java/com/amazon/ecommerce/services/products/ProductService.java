@@ -11,6 +11,7 @@ import com.amazon.ecommerce.models.Category;
 import com.amazon.ecommerce.repository.CategoryRepository;
 import com.amazon.ecommerce.repository.ProductRepository;
 import com.amazon.ecommerce.requests.AddProductRequest;
+import com.amazon.ecommerce.requests.UpdateProductRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,7 +44,7 @@ public class ProductService implements IProductService{
         return productRepository.save(createProduct(request, newCategory));
     }
 
-    public Product createProduct(AddProductRequest request, Category category){
+    private Product createProduct(AddProductRequest request, Category category){
         return new Product(
             request.getName(),
             request.getBrand(),
@@ -55,8 +56,25 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Product updateProduct(long id) {
-        throw new UnsupportedOperationException("Unimplemented method 'updateProduct'");
+    public Product updateProduct(UpdateProductRequest request, long id) {
+        return productRepository.findById(id)
+                        .map((existingProduct)->updateExistingProduct(request, existingProduct))
+                        .map(productRepository :: save)     // This is equivalent to using a lambda expression eg:.map(product -> productRepository.save(product))
+                        .orElseThrow(() -> new ProductNotFoundException("product not found with id " + id));
+    }
+
+    private Product updateExistingProduct(
+        UpdateProductRequest request, Product existingProduct){
+            existingProduct.setName(request.getName());
+            existingProduct.setBrand(request.getBrand());
+            existingProduct.setPrice(request.getPrice());
+            existingProduct.setDescription(request.getDescription());
+            existingProduct.setQuantity(request.getQuantity());
+
+
+            var category = categoryRepository.findByName(request.getCategory().getTitle());
+            existingProduct.setCategory(category);
+            return existingProduct;
     }
 
     @Override
