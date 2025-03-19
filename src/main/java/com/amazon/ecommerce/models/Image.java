@@ -27,9 +27,9 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String filname;
+    private String filName;
 
-    private String filtype;
+    private String filType;
 
     @Lob
     private Blob image;
