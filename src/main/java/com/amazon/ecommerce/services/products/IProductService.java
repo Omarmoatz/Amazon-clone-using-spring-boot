@@ -3,13 +3,14 @@ package com.amazon.ecommerce.services.products;
 import java.util.List;
 
 import com.amazon.ecommerce.models.Product;
+import com.amazon.ecommerce.requests.AddProductRequest;
 
 
 public interface IProductService{
     
     List<Product> getALlProducts();
     Product getProductById(Long id);
-    Product addProduct(Product product);
+    Product addProduct(AddProductRequest request);
     Product updateProduct(long id);
     void deleteProductById(Long id);
 

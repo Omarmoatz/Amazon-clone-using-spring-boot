@@ -1,12 +1,14 @@
 package com.amazon.ecommerce.services.products;
 
 import java.util.List;
-import java.util.Locale.Category;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.amazon.ecommerce.exceptions.ProductNotFoundException;
 import com.amazon.ecommerce.models.Product;
+import com.amazon.ecommerce.models.Category;
+import com.amazon.ecommerce.repository.CategoryRepository;
 import com.amazon.ecommerce.repository.ProductRepository;
 import com.amazon.ecommerce.requests.AddProductRequest;
 
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductService implements IProductService{
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public List<Product> getALlProducts() {
@@ -30,21 +33,24 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Product addProduct(Product product) {
-        // productRepository.save(product);
-        return null;
+    public Product addProduct(AddProductRequest request) {
+        Category newCategory = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getTitle()))
+                        .orElseGet(()->{
+                            Category category = new Category(request.getCategory().getTitle());
+                            return categoryRepository.save(category);
+                        });
+        request.setCategory(newCategory);
+        return productRepository.save(createProduct(request, newCategory));
     }
 
     public Product createProduct(AddProductRequest request, Category category){
-
         return new Product(
             request.getName(),
             request.getBrand(),
             request.getPrice(),
             request.getDescription(),
             request.getQuantity(),
-            request.getCategory()
-            // category.get
+            category
         );
     }
 

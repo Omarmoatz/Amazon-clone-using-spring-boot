@@ -32,5 +32,8 @@ public class Category {
                 mappedBy = "category")
     private List<Product> products;
 
+    public Category(String title){
+        this.title = title;
+    }
     
 }
