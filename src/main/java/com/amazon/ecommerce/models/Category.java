@@ -25,15 +25,15 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String name;
 
     @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, 
                         CascadeType.PERSIST, CascadeType.REFRESH},
                 mappedBy = "category")
     private List<Product> products;
 
-    public Category(String title){
-        this.title = title;
+    public Category(String name){
+        this.name = name;
     }
     
 }
