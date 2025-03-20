@@ -1,6 +1,5 @@
 package com.amazon.ecommerce.models;
 
-
 import java.sql.Blob;
 
 import jakarta.persistence.CascadeType;
@@ -37,5 +36,5 @@ public class Image {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product product;
-    
+
 }
