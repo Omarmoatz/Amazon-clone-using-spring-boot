@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
 
-import org.apache.tomcat.util.http.fileupload.impl.IOFileUploadException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +14,6 @@ import com.amazon.ecommerce.dto.ImageDTO;
 import com.amazon.ecommerce.exceptions.ResourceNotFoundException;
 import com.amazon.ecommerce.models.Image;
 import com.amazon.ecommerce.repository.ImageRepository;
-import com.amazon.ecommerce.repository.ProductRepository;
 import com.amazon.ecommerce.services.products.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -48,8 +46,8 @@ public class ImageService implements IImageService {
 
         List<ImageDTO> savedImages = new ArrayList<>();
 
-        for (MultipartFile file: files){
-            try{
+        for (MultipartFile file : files) {
+            try {
                 var image = new Image();
                 image.setFilName(file.getOriginalFilename());
                 image.setFilType(file.getContentType());
@@ -57,7 +55,7 @@ public class ImageService implements IImageService {
                 image.setProduct(product);
                 var savedImage = imageRepository.save(image);
 
-                var url = "api/v1/images/image/download/"+savedImage.getId();
+                var url = "api/v1/images/image/download/" + savedImage.getId();
                 savedImage.setDownloadUrl(url);
                 imageRepository.save(savedImage);
 
@@ -65,15 +63,14 @@ public class ImageService implements IImageService {
                 imageDto.setImageId(savedImage.getId());
                 imageDto.setImageName(savedImage.getFilName());
                 imageDto.setDownloadUrl(savedImage.getDownloadUrl());
-                
+
                 savedImages.add(imageDto);
 
-
-            }catch( IOException | SQLException e){
+            } catch (IOException | SQLException e) {
                 throw new RuntimeException(e.getMessage());
             }
         }
-        
+
         return savedImages;
     }
 
