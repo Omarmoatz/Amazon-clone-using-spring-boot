@@ -1,7 +1,13 @@
 package com.amazon.ecommerce.responses;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+
+@AllArgsConstructor
+@Data
 public class ApiResponse {
     private String message;
     
-    private String data;
+    private Object data;
 }
