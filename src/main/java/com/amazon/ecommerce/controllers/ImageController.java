@@ -32,6 +32,12 @@ public class ImageController {
 
     private final ImageService imageService;
 
+    @GetMapping("/")
+    public ResponseEntity<ApiResponse> getAllImages(){
+        var images = imageService.getAllImages();
+        return ResponseEntity.ok().body(new ApiResponse(null, images));
+    }
+
     @PostMapping("/upload")
     public ResponseEntity<ApiResponse> addImage(@RequestParam List<MultipartFile> files, @RequestParam Long productId) {
         try {

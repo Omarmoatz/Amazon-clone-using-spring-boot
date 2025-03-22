@@ -8,6 +8,7 @@ import com.amazon.ecommerce.dto.ImageDTO;
 import com.amazon.ecommerce.models.Image;
 
 public interface IImageService {
+    List<Image> getAllImages();
     Image getImageById(Long id);
     String deleteImageById(Long id);
 
