@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.amazon.ecommerce.exceptions.ResourceAlreadyExistedException;
 import com.amazon.ecommerce.exceptions.ResourceNotFoundException;
 import com.amazon.ecommerce.models.Category;
 import com.amazon.ecommerce.repository.CategoryRepository;
@@ -39,7 +40,7 @@ public class CategoryService implements ICategoryService {
                 .filter(ctg -> !categoryRepository.existsByName(ctg.getName()))
                 .map(categoryRepository::save)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("category already existed with name" + category.getName()));
+                        () -> new ResourceAlreadyExistedException("category already existed with name " + category.getName()));
     }
 
     @Override

@@ -33,9 +33,14 @@ public class ImageController {
     private final ImageService imageService;
 
     @GetMapping("/")
-    public ResponseEntity<ApiResponse> getAllImages(){
-        var images = imageService.getAllImages();
-        return ResponseEntity.ok().body(new ApiResponse(null, images));
+    public ResponseEntity<ApiResponse> getAllImages() {
+        try {
+            var images = imageService.getAllImages();
+            return ResponseEntity.ok(new ApiResponse(null, images));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("faild to get all the images", HttpStatus.INTERNAL_SERVER_ERROR));
+        }
     }
 
     @PostMapping("/upload")
