@@ -39,15 +39,17 @@ public class ImageController {
             return ResponseEntity.ok(new ApiResponse(null, images));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse("faild to get all the images", HttpStatus.INTERNAL_SERVER_ERROR));
+                    .body(new ApiResponse("failed to get all the images", HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<ApiResponse> addImage(@RequestParam List<MultipartFile> files, @RequestParam Long productId) {
+    public ResponseEntity<ApiResponse> addImage(
+            @RequestParam List<MultipartFile> files,
+            @RequestParam Long productId) {
         try {
             var images = imageService.addImage(files, productId);
-            return ResponseEntity.ok(new ApiResponse("images uplaoded successfully", images));
+            return ResponseEntity.ok(new ApiResponse("images uploaded successfully", images));
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -61,7 +63,7 @@ public class ImageController {
         var resource = new ByteArrayResource(img.getImage().getBytes(1, (int) img.getImage().length()));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(img.getFilType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachement; filename=\"" + img.getFilName() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + img.getFilName() + "\"")
                 .body(resource);
 
     }
@@ -79,7 +81,7 @@ public class ImageController {
                     .body(new ApiResponse("image not found with id: " + imageId, HttpStatus.NOT_FOUND));
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse("faild to update the image", HttpStatus.INTERNAL_SERVER_ERROR));
+                .body(new ApiResponse("failed to update the image", HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @DeleteMapping("/{imageId}")
@@ -95,7 +97,7 @@ public class ImageController {
                     .body(new ApiResponse("image not found with id: " + imageId, HttpStatus.NOT_FOUND));
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse("Faild to delete the image", null));
+                .body(new ApiResponse("Failed to delete the image", null));
     }
 
 }
