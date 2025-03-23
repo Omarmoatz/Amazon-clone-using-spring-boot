@@ -1,10 +1,15 @@
 package com.amazon.ecommerce.controllers;
 
+import javax.management.relation.RoleNotFoundException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +20,7 @@ import com.amazon.ecommerce.models.Category;
 import com.amazon.ecommerce.responses.ApiResponse;
 import com.amazon.ecommerce.services.categories.CategoryService;
 
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -72,6 +78,33 @@ public class CategoryController {
         } catch (ResourceAlreadyExistedException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse> updateCategory(
+            @PathVariable Long id, @RequestBody Category category) {
+
+        try {
+            var ctg = categoryService.updateCategory(category, id);
+            return ResponseEntity.ok(new ApiResponse("updated", ctg));
+
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(e.getMessage(), category));
+        }
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Long id){
+
+        try{
+            categoryService.deleteCategoryById(id);
+            return ResponseEntity.ok(new ApiResponse("deleted successfully category with id : " + id, null));
+        }catch(ResourceNotFoundException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(new ApiResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
