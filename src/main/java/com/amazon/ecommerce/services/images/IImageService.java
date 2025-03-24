@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazon.ecommerce.dto.ImageDTO;
+import com.amazon.ecommerce.dto.image.ImageDTO;
 import com.amazon.ecommerce.models.Image;
 
 public interface IImageService {

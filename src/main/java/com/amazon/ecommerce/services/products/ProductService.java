@@ -5,13 +5,13 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.amazon.ecommerce.dto.product.AddProductRequestDTO;
+import com.amazon.ecommerce.dto.product.UpdateProductRequestDTO;
 import com.amazon.ecommerce.exceptions.ProductNotFoundException;
 import com.amazon.ecommerce.models.Product;
 import com.amazon.ecommerce.models.Category;
 import com.amazon.ecommerce.repository.CategoryRepository;
 import com.amazon.ecommerce.repository.ProductRepository;
-import com.amazon.ecommerce.requests.AddProductRequest;
-import com.amazon.ecommerce.requests.UpdateProductRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +34,7 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Product addProduct(AddProductRequest request) {
+    public Product addProduct(AddProductRequestDTO request) {
         Category newCategory = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                         .orElseGet(()->{
                             Category category = new Category(request.getCategory().getName());
@@ -44,7 +44,7 @@ public class ProductService implements IProductService{
         return productRepository.save(createProduct(request, newCategory));
     }
 
-    private Product createProduct(AddProductRequest request, Category category){
+    private Product createProduct(AddProductRequestDTO request, Category category){
         return new Product(
             request.getName(),
             request.getBrand(),
@@ -56,7 +56,7 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Product updateProduct(UpdateProductRequest request, long id) {
+    public Product updateProduct(UpdateProductRequestDTO request, long id) {
         return productRepository.findById(id)
                         .map((existingProduct)->updateExistingProduct(request, existingProduct))
                         .map(productRepository :: save)     // This is equivalent to using a lambda expression eg:.map(product -> productRepository.save(product))
@@ -64,7 +64,7 @@ public class ProductService implements IProductService{
     }
 
     private Product updateExistingProduct(
-        UpdateProductRequest request, Product existingProduct){
+        UpdateProductRequestDTO request, Product existingProduct){
             existingProduct.setName(request.getName());
             existingProduct.setBrand(request.getBrand());
             existingProduct.setPrice(request.getPrice());

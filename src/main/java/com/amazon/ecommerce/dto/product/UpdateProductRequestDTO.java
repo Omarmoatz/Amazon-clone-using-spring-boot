@@ -1,4 +1,4 @@
-package com.amazon.ecommerce.requests;
+package com.amazon.ecommerce.dto.product;
 
 import java.math.BigDecimal;
 
@@ -9,7 +9,7 @@ import lombok.Data;
 
 
 @Data
-public class UpdateProductRequest {
+public class UpdateProductRequestDTO {
     private String name;
 
     private String brand;

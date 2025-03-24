@@ -10,7 +10,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazon.ecommerce.dto.ImageDTO;
+import com.amazon.ecommerce.dto.image.ImageDTO;
 import com.amazon.ecommerce.exceptions.ResourceNotFoundException;
 import com.amazon.ecommerce.models.Image;
 import com.amazon.ecommerce.repository.ImageRepository;

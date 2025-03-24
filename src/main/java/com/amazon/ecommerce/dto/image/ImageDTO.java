@@ -1,4 +1,4 @@
-package com.amazon.ecommerce.dto;
+package com.amazon.ecommerce.dto.image;
 
 import lombok.Data;
 

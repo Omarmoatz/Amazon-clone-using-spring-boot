@@ -1,6 +1,5 @@
 package com.amazon.ecommerce.controllers;
 
-import javax.management.relation.RoleNotFoundException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,16 +10,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.amazon.ecommerce.dto.category.CategoryCreateDTO;
+import com.amazon.ecommerce.dto.category.CategoryUpdateDTO;
 import com.amazon.ecommerce.exceptions.ResourceAlreadyExistedException;
 import com.amazon.ecommerce.exceptions.ResourceNotFoundException;
-import com.amazon.ecommerce.models.Category;
 import com.amazon.ecommerce.responses.ApiResponse;
 import com.amazon.ecommerce.services.categories.CategoryService;
 
-import jakarta.websocket.server.PathParam;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<ApiResponse> getAllCategories() {
         try {
             var ctg = categoryService.findAll();
@@ -68,11 +67,10 @@ public class CategoryController {
         }
     }
 
-    @PostMapping("/")
-    public ResponseEntity<ApiResponse> addCategory(@RequestParam String name) {
+    @PostMapping
+    public ResponseEntity<ApiResponse> addCategory(@RequestBody @Valid CategoryCreateDTO request) {
         try {
-            var ctg = new Category(name);
-            var newCtg = categoryService.addCategory(ctg);
+            var newCtg = categoryService.addCategory(request);
             return ResponseEntity.ok(new ApiResponse("added successfully", newCtg));
 
         } catch (ResourceAlreadyExistedException e) {
@@ -83,15 +81,15 @@ public class CategoryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateCategory(
-            @PathVariable Long id, @RequestBody Category category) {
+            @PathVariable Long id, @RequestBody @Valid CategoryUpdateDTO request) {
 
         try {
-            var ctg = categoryService.updateCategory(category, id);
+            var ctg = categoryService.updateCategory(request, id);
             return ResponseEntity.ok(new ApiResponse("updated", ctg));
 
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(e.getMessage(), category));
+                    .body(new ApiResponse(e.getMessage(), request));
         }
 
     }

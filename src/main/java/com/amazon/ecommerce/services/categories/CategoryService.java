@@ -1,10 +1,13 @@
 package com.amazon.ecommerce.services.categories;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.amazon.ecommerce.dto.category.CategoryCreateDTO;
+import com.amazon.ecommerce.dto.category.CategoryRetrieveDTO;
+import com.amazon.ecommerce.dto.category.CategoryUpdateDTO;
 import com.amazon.ecommerce.exceptions.ResourceAlreadyExistedException;
 import com.amazon.ecommerce.exceptions.ResourceNotFoundException;
 import com.amazon.ecommerce.models.Category;
@@ -19,37 +22,46 @@ public class CategoryService implements ICategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Category findById(long id) {
-        return categoryRepository.findById(id)
+    public CategoryRetrieveDTO findById(long id) {
+        var ctg = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id : " + id));
+
+        return new CategoryRetrieveDTO(ctg.getId(), ctg.getName());
     }
 
     @Override
-    public Category findByName(String name) {
-        return categoryRepository.findByName(name);
+    public CategoryRetrieveDTO findByName(String name) {
+        var ctg = categoryRepository.findByName(name);
+        return new CategoryRetrieveDTO(ctg.getId(), ctg.getName());
     }
 
     @Override
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public List<CategoryRetrieveDTO> findAll() {
+        return categoryRepository.findAll()
+                .stream()
+                .map((ctg) -> new CategoryRetrieveDTO(ctg.getId(), ctg.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Category addCategory(Category category) {
-        return Optional.of(category)
-                .filter(ctg -> !categoryRepository.existsByName(ctg.getName()))
-                .map(categoryRepository::save)
-                .orElseThrow(
-                        () -> new ResourceAlreadyExistedException("category already existed with name " + category.getName()));
+    public CategoryRetrieveDTO addCategory(CategoryCreateDTO request) {
+        if (categoryRepository.existsByName(request.getName())){
+            throw new ResourceAlreadyExistedException("there is already a category with this name");
+        }
+
+        var ctg = new Category(request.getName());
+        categoryRepository.save(ctg);
+        return new CategoryRetrieveDTO(ctg.getId(), ctg.getName());
     }
 
     @Override
-    public Category updateCategory(Category category, long id) {
-        return Optional.ofNullable(findById(id))
-                .map((oldCtg) -> {
-                    oldCtg.setName(category.getName());
-                    return categoryRepository.save(oldCtg);
-                }).orElseThrow(() -> new ResourceNotFoundException("category not found with id " + id));
+    public CategoryRetrieveDTO updateCategory(CategoryUpdateDTO request, long id) {
+        var ctg = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("no category found by id : " + id));
+
+        ctg.setName(request.getName());
+        categoryRepository.save(ctg);
+        return new CategoryRetrieveDTO(ctg.getId(), ctg.getName());
     }
 
     @Override

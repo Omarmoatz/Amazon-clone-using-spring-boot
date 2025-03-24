@@ -2,15 +2,17 @@ package com.amazon.ecommerce.services.categories;
 
 import java.util.List;
 
-import com.amazon.ecommerce.models.Category;
+import com.amazon.ecommerce.dto.category.CategoryCreateDTO;
+import com.amazon.ecommerce.dto.category.CategoryRetrieveDTO;
+import com.amazon.ecommerce.dto.category.CategoryUpdateDTO;
 
 
 public interface ICategoryService {
-    Category findById(long id);
-    Category findByName(String name);
-    List<Category> findAll();
+    CategoryRetrieveDTO findById(long id);
+    CategoryRetrieveDTO findByName(String name);
+    List<CategoryRetrieveDTO> findAll();
 
-    Category addCategory(Category category);
-    Category updateCategory(Category category, long id);
+    CategoryRetrieveDTO addCategory(CategoryCreateDTO category);
+    CategoryRetrieveDTO updateCategory(CategoryUpdateDTO category, long id);
     String deleteCategoryById(long id);
 }
