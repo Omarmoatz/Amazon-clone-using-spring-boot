@@ -31,79 +31,43 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAllCategories() {
-        try {
-            var ctg = categoryService.findAll();
-            return ResponseEntity.ok(new ApiResponse("found", ctg));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
-        }
+        var ctg = categoryService.findAll();
+        return ResponseEntity.ok(new ApiResponse("found", ctg));        
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getCategoryById(@PathVariable Long id) {
-        try {
-            var ctg = categoryService.findById(id);
-            return ResponseEntity.ok(new ApiResponse("found", ctg));
-
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+        var ctg = categoryService.findById(id);
+        return ResponseEntity.ok(new ApiResponse("found", ctg));
     }
 
     @GetMapping("name/{name}")
     public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable String name) {
-        try {
-            var ctg = categoryService.findByName(name);
-            if (ctg == null)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ApiResponse("no category found by name: " + name, null));
-            return ResponseEntity.ok(new ApiResponse("Found", ctg));
-
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+        var ctg = categoryService.findByName(name);
+        if (ctg == null)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse("no category found by name: " + name, null));
+        return ResponseEntity.ok(new ApiResponse("Found", ctg));
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse> addCategory(@RequestBody @Valid CategoryCreateDTO request) {
-        try {
-            var newCtg = categoryService.addCategory(request);
-            return ResponseEntity.ok(new ApiResponse("added successfully", newCtg));
-
-        } catch (ResourceAlreadyExistedException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+        var newCtg = categoryService.addCategory(request);
+        return ResponseEntity.ok(new ApiResponse("added successfully", newCtg));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateCategory(
             @PathVariable Long id, @RequestBody @Valid CategoryUpdateDTO request) {
 
-        try {
-            var ctg = categoryService.updateCategory(request, id);
-            return ResponseEntity.ok(new ApiResponse("updated", ctg));
-
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(e.getMessage(), request));
-        }
-
+        var ctg = categoryService.updateCategory(request, id);
+        return ResponseEntity.ok(new ApiResponse("updated", ctg));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Long id){
-
-        try{
-            categoryService.deleteCategoryById(id);
-            return ResponseEntity.ok(new ApiResponse("deleted successfully category with id : " + id, null));
-        }catch(ResourceNotFoundException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ApiResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
-        }
+        categoryService.deleteCategoryById(id);
+        return ResponseEntity.ok(new ApiResponse("deleted successfully category with id : " + id, null));
     }
 
 }

@@ -14,5 +14,5 @@ public interface ICategoryService {
 
     CategoryRetrieveDTO addCategory(CategoryCreateDTO category);
     CategoryRetrieveDTO updateCategory(CategoryUpdateDTO category, long id);
-    String deleteCategoryById(long id);
+    void deleteCategoryById(long id);
 }

@@ -23,4 +23,10 @@ public class GlobalException {
     public ApiResponse handleInternalServerError(Exception e){
         return new ApiResponse(e.getMessage(), null);
     }
+
+    @ExceptionHandler(ResourceAlreadyExistedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiResponse handleResourceAlreadyExisted(ResourceAlreadyExistedException e){
+        return new ApiResponse(e.getMessage(), null);
+    }
 }

@@ -65,12 +65,10 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public String deleteCategoryById(long id) {
+    public void deleteCategoryById(long id) {
         categoryRepository.findById(id)
                 .ifPresentOrElse(categoryRepository::delete,
                         () -> new ResourceNotFoundException("category not found with id" + id));
-
-        return "category deleted successfully";
     }
 
 }
