@@ -3,6 +3,7 @@ package com.amazon.ecommerce.services.products;
 import java.util.List;
 
 import com.amazon.ecommerce.dto.product.AddProductRequestDTO;
+import com.amazon.ecommerce.dto.product.RetrieveProductDTO;
 import com.amazon.ecommerce.dto.product.UpdateProductRequestDTO;
 import com.amazon.ecommerce.models.Category;
 import com.amazon.ecommerce.models.Product;
@@ -10,7 +11,7 @@ import com.amazon.ecommerce.models.Product;
 
 public interface IProductService{
     
-    List<Product> getALlProducts();
+    List<RetrieveProductDTO> getALlProducts();
     Product getProductById(Long id);
     Product addProduct(AddProductRequestDTO request);
     Product updateProduct(UpdateProductRequestDTO request, long id);

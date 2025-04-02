@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.amazon.ecommerce.dto.category.CategoryCreateDTO;
 import com.amazon.ecommerce.dto.category.CategoryUpdateDTO;
-import com.amazon.ecommerce.exceptions.ResourceAlreadyExistedException;
-import com.amazon.ecommerce.exceptions.ResourceNotFoundException;
 import com.amazon.ecommerce.responses.ApiResponse;
 import com.amazon.ecommerce.services.categories.CategoryService;
 
