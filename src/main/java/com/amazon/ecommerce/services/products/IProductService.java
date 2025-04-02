@@ -12,8 +12,8 @@ import com.amazon.ecommerce.models.Product;
 public interface IProductService{
     
     List<RetrieveProductDTO> getALlProducts();
-    Product getProductById(Long id);
-    Product addProduct(AddProductRequestDTO request);
+    RetrieveProductDTO getProductById(Long id);
+    RetrieveProductDTO addProduct(AddProductRequestDTO request);
     Product updateProduct(UpdateProductRequestDTO request, long id);
     void deleteProductById(Long id);
 

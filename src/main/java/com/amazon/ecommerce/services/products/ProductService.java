@@ -27,41 +27,49 @@ public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
+    public RetrieveProductDTO retrieveProduct(Product product){
+        return new RetrieveProductDTO(
+            product.getId(),
+            product.getName(),
+            product.getBrand(),
+
+            product.getPrice(),
+            product.getDescription(),
+            product.getQuantity(),
+
+            new CategoryRetrieveDTO(
+                product.getCategory().getId(), 
+                product.getCategory().getName()),
+            product.getImages());
+    }
+
     @Override
     public List<RetrieveProductDTO> getALlProducts() {
         return productRepository.findAll()
                 .stream()
-                .map((product) -> new RetrieveProductDTO(
-                        product.getId(),
-                        product.getName(),
-                        product.getBrand(),
-
-                        product.getPrice(),
-                        product.getDescription(),
-                        product.getQuantity(),
-
-                        new CategoryRetrieveDTO(
-                            product.getCategory().getId(), 
-                            product.getCategory().getName()),
-                        product.getImages()))
+                .map((product) -> retrieveProduct(product))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Product getProductById(Long id) {
-        return productRepository.findById(id)
+    public RetrieveProductDTO getProductById(Long id) {
+        var product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("product not found with id " + id));
+    
+        return retrieveProduct(product);
     }
 
     @Override
-    public Product addProduct(AddProductRequestDTO request) {
+    public RetrieveProductDTO addProduct(AddProductRequestDTO request) {
         Category newCategory = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category category = new Category(request.getCategory().getName());
                     return categoryRepository.save(category);
                 });
         request.setCategory(newCategory);
-        return productRepository.save(createProduct(request, newCategory));
+        var product =  productRepository.save(createProduct(request, newCategory));
+    
+        return retrieveProduct(product);
     }
 
     private Product createProduct(AddProductRequestDTO request, Category category) {
