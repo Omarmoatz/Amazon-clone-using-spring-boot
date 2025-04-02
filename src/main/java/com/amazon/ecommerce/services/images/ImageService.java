@@ -10,7 +10,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazon.ecommerce.dto.image.ImageDTO;
+import com.amazon.ecommerce.dto.image.ImageCreateDTO;
 import com.amazon.ecommerce.exceptions.ResourceNotFoundException;
 import com.amazon.ecommerce.models.Image;
 import com.amazon.ecommerce.repository.ImageRepository;
@@ -46,10 +46,10 @@ public class ImageService implements IImageService {
     }
 
     @Override
-    public List<ImageDTO> addImage(List<MultipartFile> files, Long productId) {
+    public List<ImageCreateDTO> addImage(List<MultipartFile> files, Long productId) {
         var product = productService.getProductById(null);
 
-        List<ImageDTO> savedImages = new ArrayList<>();
+        List<ImageCreateDTO> savedImages = new ArrayList<>();
 
         for (MultipartFile file : files) {
             try {
@@ -64,7 +64,7 @@ public class ImageService implements IImageService {
                 savedImage.setDownloadUrl(url);
                 imageRepository.save(savedImage);
 
-                var imageDto = new ImageDTO();
+                var imageDto = new ImageCreateDTO();
                 imageDto.setImageId(savedImage.getId());
                 imageDto.setImageName(savedImage.getFilName());
                 imageDto.setDownloadUrl(savedImage.getDownloadUrl());
