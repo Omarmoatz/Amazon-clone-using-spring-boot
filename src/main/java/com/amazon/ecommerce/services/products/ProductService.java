@@ -1,9 +1,7 @@
 package com.amazon.ecommerce.services.products;
 
-import java.text.Collator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -12,7 +10,7 @@ import com.amazon.ecommerce.dto.category.CategoryRetrieveDTO;
 import com.amazon.ecommerce.dto.product.AddProductRequestDTO;
 import com.amazon.ecommerce.dto.product.RetrieveProductDTO;
 import com.amazon.ecommerce.dto.product.UpdateProductRequestDTO;
-import com.amazon.ecommerce.exceptions.ProductNotFoundException;
+import com.amazon.ecommerce.exceptions.ResourceNotFoundException;
 import com.amazon.ecommerce.models.Product;
 import com.amazon.ecommerce.models.Category;
 import com.amazon.ecommerce.repository.CategoryRepository;
@@ -52,10 +50,14 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public Product findProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("product not found with id " + id));    
+    }
+
+    @Override
     public RetrieveProductDTO getProductById(Long id) {
-        var product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("product not found with id " + id));
-    
+        var product = findProductById(id);
         return retrieveProduct(product);
     }
 
@@ -86,9 +88,9 @@ public class ProductService implements IProductService {
     public Product updateProduct(UpdateProductRequestDTO request, long id) {
         return productRepository.findById(id)
                 .map((existingProduct) -> updateExistingProduct(request, existingProduct))
-                .map(productRepository::save) // This is equivalent to using a lambda expression eg:.map(product ->
-                                              // productRepository.save(product))
-                .orElseThrow(() -> new ProductNotFoundException("product not found with id " + id));
+                .map(productRepository::save) // This is equivalent to using a lambda expression 
+                                              //eg:.map(product -> productRepository.save(product))
+                .orElseThrow(() -> new ResourceNotFoundException("product not found with id " + id));
     }
 
     private Product updateExistingProduct(
@@ -106,9 +108,11 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProductById(Long id) {
-        productRepository.findById(id).ifPresentOrElse(productRepository::delete,
-                () -> new ProductNotFoundException("product not found with id " + id));
-        ;
+        // productRepository.findById(id).ifPresentOrElse(productRepository::delete,
+        //         () -> new ResourceNotFoundException("product not found with id " + id));
+    
+        var product = findProductById(id);
+        productRepository.delete(product);
     }
 
     @Override

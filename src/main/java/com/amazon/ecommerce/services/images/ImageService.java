@@ -47,7 +47,7 @@ public class ImageService implements IImageService {
 
     @Override
     public List<ImageCreateDTO> addImage(List<MultipartFile> files, Long productId) {
-        var product = productService.getProductById(null);
+        var product = productService.findProductById(productId);
 
         List<ImageCreateDTO> savedImages = new ArrayList<>();
 

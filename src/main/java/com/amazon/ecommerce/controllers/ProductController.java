@@ -1,6 +1,7 @@
 package com.amazon.ecommerce.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,15 +29,22 @@ public class ProductController {
         return ResponseEntity.ok(new ApiResponse("found", products));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getProductById(@PathVariable Long id) {
+        var product = productService.getProductById(id);
+        return ResponseEntity.ok(new ApiResponse("Found", product));
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse> addProduct(@RequestBody @Valid AddProductRequestDTO request) {
         var product = productService.addProduct(request);
         return ResponseEntity.ok(new ApiResponse("added product successfully", product));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse> getProductById(@PathVariable Long id) {
-        var product = productService.getProductById(id);
-        return ResponseEntity.ok(new ApiResponse("Found", product));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long id){
+        productService.deleteProductById(id);
+        return ResponseEntity.ok(new ApiResponse("successfully deleted product with id " + id,null));
     }
+
 }
