@@ -15,7 +15,7 @@ public interface IProductService{
     Product findProductById(Long id);
     RetrieveProductDTO getProductById(Long id);
     RetrieveProductDTO addProduct(AddProductRequestDTO request);
-    Product updateProduct(UpdateProductRequestDTO request, long id);
+    RetrieveProductDTO updateProduct(UpdateProductRequestDTO request, long id);
     void deleteProductById(Long id);
 
     List<Product> getProductsByCategoryName(String categoryName);

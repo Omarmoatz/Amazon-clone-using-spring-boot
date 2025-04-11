@@ -5,11 +5,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.amazon.ecommerce.dto.product.AddProductRequestDTO;
+import com.amazon.ecommerce.dto.product.UpdateProductRequestDTO;
 import com.amazon.ecommerce.responses.ApiResponse;
 import com.amazon.ecommerce.services.products.ProductService;
 
@@ -39,6 +41,13 @@ public class ProductController {
     public ResponseEntity<ApiResponse> addProduct(@RequestBody @Valid AddProductRequestDTO request) {
         var product = productService.addProduct(request);
         return ResponseEntity.ok(new ApiResponse("added product successfully", product));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse> updateProduct(
+        @RequestBody @Valid UpdateProductRequestDTO request, @PathVariable Long id){
+        var product = productService.updateProduct(request, id);
+        return ResponseEntity.ok(new ApiResponse("updated product successfully with id : " + id, product));
     }
 
     @DeleteMapping("/{id}")

@@ -85,12 +85,13 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product updateProduct(UpdateProductRequestDTO request, long id) {
-        return productRepository.findById(id)
+    public RetrieveProductDTO updateProduct(UpdateProductRequestDTO request, long id) {
+        var product =  productRepository.findById(id)
                 .map((existingProduct) -> updateExistingProduct(request, existingProduct))
                 .map(productRepository::save) // This is equivalent to using a lambda expression 
                                               //eg:.map(product -> productRepository.save(product))
                 .orElseThrow(() -> new ResourceNotFoundException("product not found with id " + id));
+        return retrieveProduct(product);
     }
 
     private Product updateExistingProduct(
@@ -101,7 +102,11 @@ public class ProductService implements IProductService {
         existingProduct.setDescription(request.getDescription());
         existingProduct.setQuantity(request.getQuantity());
 
-        var category = categoryRepository.findByName(request.getCategory().getName());
+        var ctgName = request.getCategory().getName();
+        var category = categoryRepository.findByName(ctgName);
+        if (category == null ){
+            throw new ResourceNotFoundException("category not found with name " + ctgName);
+        }
         existingProduct.setCategory(category);
         return existingProduct;
     }
