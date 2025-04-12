@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.amazon.ecommerce.dto.product.AddProductRequestDTO;
@@ -45,15 +46,24 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateProduct(
-        @RequestBody @Valid UpdateProductRequestDTO request, @PathVariable Long id){
+            @RequestBody @Valid UpdateProductRequestDTO request, @PathVariable Long id) {
         var product = productService.updateProduct(request, id);
         return ResponseEntity.ok(new ApiResponse("updated product successfully with id : " + id, product));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long id){
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long id) {
         productService.deleteProductById(id);
-        return ResponseEntity.ok(new ApiResponse("successfully deleted product with id " + id,null));
+        return ResponseEntity.ok(new ApiResponse("successfully deleted product with id " + id, null));
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<ApiResponse> getFilteredProducts(
+        @RequestParam(required = false) String categoryName,
+        @RequestParam(required = false) String brand,
+        @RequestParam(required = false) String name
+    ){
+        var products = productService.getFilteredProducts(categoryName, brand, name);
+        return ResponseEntity.ok(new ApiResponse("successfully found", products));
+    }
 }
