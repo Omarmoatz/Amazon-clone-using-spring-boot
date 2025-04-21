@@ -16,7 +16,6 @@ import com.amazon.ecommerce.models.Product;
 import com.amazon.ecommerce.models.Category;
 import com.amazon.ecommerce.repository.CategoryRepository;
 import com.amazon.ecommerce.repository.ProductRepository;
-import com.amazon.ecommerce.services.categories.CategoryService;
 import com.amazon.ecommerce.specification.ProductSpecification;
 
 import lombok.RequiredArgsConstructor;

@@ -8,10 +8,12 @@ import com.amazon.ecommerce.models.Image;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class RetrieveProductDTO {
     private Long id;
     
