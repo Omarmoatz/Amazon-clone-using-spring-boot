@@ -25,12 +25,22 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
     private final ProductService productService;
-
+    
     @GetMapping
-    public ResponseEntity<ApiResponse> getAllProducts() {
-        var products = productService.getALlProducts();
-        return ResponseEntity.ok(new ApiResponse("found", products));
+    public ResponseEntity<ApiResponse> getFilteredProducts(
+        @RequestParam(required = false) String categoryName,
+        @RequestParam(required = false) String brand,
+        @RequestParam(required = false) String name
+    ){
+        var products = productService.getFilteredProducts(categoryName, brand, name);
+        return ResponseEntity.ok(new ApiResponse("successfully found", products));
     }
+
+    // @GetMapping
+    // public ResponseEntity<ApiResponse> getAllProducts() {
+    //     var products = productService.getALlProducts();
+    //     return ResponseEntity.ok(new ApiResponse("found", products));
+    // }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable Long id) {
@@ -57,13 +67,4 @@ public class ProductController {
         return ResponseEntity.ok(new ApiResponse("successfully deleted product with id " + id, null));
     }
 
-    @GetMapping("/filter")
-    public ResponseEntity<ApiResponse> getFilteredProducts(
-        @RequestParam(required = false) String categoryName,
-        @RequestParam(required = false) String brand,
-        @RequestParam(required = false) String name
-    ){
-        var products = productService.getFilteredProducts(categoryName, brand, name);
-        return ResponseEntity.ok(new ApiResponse("successfully found", products));
-    }
 }
