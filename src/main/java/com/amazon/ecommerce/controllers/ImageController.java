@@ -27,33 +27,32 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/image")
+@RequestMapping("/images")
 public class ImageController {
 
     private final ImageService imageService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<ApiResponse> getAllImages() {
         try {
             var images = imageService.getAllImages();
             return ResponseEntity.ok(new ApiResponse(null, images));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse("failed to get all the images", HttpStatus.INTERNAL_SERVER_ERROR));
+                    .body(new ApiResponse(e.getMessage(), null));
         }
     }
 
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> addImage(
-            @RequestParam List<MultipartFile> files,
-            @RequestParam Long productId) {
+            @RequestParam("files") List<MultipartFile> files,
+            @RequestParam("productId") Long productId) {
         try {
             var images = imageService.addImage(files, productId);
             return ResponseEntity.ok(new ApiResponse("images uploaded successfully", images));
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse("failed to upload the images", files));
+                    .body(new ApiResponse(e.getMessage(), null));
         }
     }
 

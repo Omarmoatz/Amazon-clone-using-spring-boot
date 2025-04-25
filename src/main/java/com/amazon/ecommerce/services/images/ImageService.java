@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazon.ecommerce.dto.image.ImageCreateDTO;
+import com.amazon.ecommerce.dto.image.ImageRetrieveDTO;
 import com.amazon.ecommerce.exceptions.ResourceNotFoundException;
 import com.amazon.ecommerce.models.Image;
 import com.amazon.ecommerce.repository.ImageRepository;
@@ -24,10 +27,14 @@ public class ImageService implements IImageService {
 
     private final ImageRepository imageRepository;
     private final ProductService productService;
+    private final ModelMapper modelMapper;
 
     @Override
-    public List<Image> getAllImages() {
-        return imageRepository.findAll();
+    public List<ImageRetrieveDTO> getAllImages() {
+        return imageRepository.findAll()
+                .stream()
+                .map((image) -> modelMapper.map(image, ImageRetrieveDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
