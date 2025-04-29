@@ -2,7 +2,6 @@ package com.amazon.ecommerce.models;
 
 import java.util.List;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
