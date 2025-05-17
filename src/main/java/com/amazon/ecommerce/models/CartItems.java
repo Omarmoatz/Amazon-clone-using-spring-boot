@@ -30,6 +30,8 @@ public class CartItems {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product products;
+
+    private int quantity;
     
     private float totalPrice;
 
