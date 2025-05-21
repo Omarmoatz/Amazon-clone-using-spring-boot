@@ -2,13 +2,18 @@ package com.amazon.ecommerce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.amazon.ecommerce.services.user.UserDetailService;
 
 @Configuration
 @EnableWebSecurity
@@ -22,21 +27,29 @@ public class SecurityConfig {
                 .build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
+    // @Bean
+    // public UserDetailsService userDetailsService() {
 
-        var user1 = User.withDefaultPasswordEncoder()
-                .username("omar")
-                .password("12345")
-                .roles("ADMIN")
-                .build();
+    //     var user1 = User.withDefaultPasswordEncoder()
+    //             .username("omar")
+    //             .password("12345")
+    //             .roles("ADMIN")
+    //             .build();
         
-        var user2 = User.withDefaultPasswordEncoder()
-                .username("ahmed")
-                .password("12345")
-                .roles("USER")
-                .build();
+    //     var user2 = User.withDefaultPasswordEncoder()
+    //             .username("ahmed")
+    //             .password("12345")
+    //             .roles("USER")
+    //             .build();
 
-        return new InMemoryUserDetailsManager(user1, user2);
+    //     return new InMemoryUserDetailsManager(user1, user2);
+    // }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
+        var provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+        provider.setUserDetailsService(new UserDetailService());
+        return provider;
     }
 }
