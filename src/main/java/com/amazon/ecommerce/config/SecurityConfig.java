@@ -1,5 +1,6 @@
 package com.amazon.ecommerce.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -19,6 +20,9 @@ import com.amazon.ecommerce.services.user.UserDetailService;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private UserDetailService userDetailService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(customizer -> customizer.disable())
@@ -26,6 +30,15 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .build();
     }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
+        var provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+        provider.setUserDetailsService(userDetailService);
+        return provider;
+    }
+
 
     // @Bean
     // public UserDetailsService userDetailsService() {
@@ -45,11 +58,4 @@ public class SecurityConfig {
     //     return new InMemoryUserDetailsManager(user1, user2);
     // }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider(){
-        var provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
-        provider.setUserDetailsService(new UserDetailService());
-        return provider;
-    }
 }
