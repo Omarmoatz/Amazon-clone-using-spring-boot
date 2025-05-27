@@ -1,4 +1,4 @@
-package com.amazon.ecommerce.services.user;
+package com.amazon.ecommerce.services.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
