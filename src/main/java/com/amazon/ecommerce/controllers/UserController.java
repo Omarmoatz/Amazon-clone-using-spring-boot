@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.amazon.ecommerce.dto.user.UserCreateUpdateDto;
 import com.amazon.ecommerce.models.User;
 import com.amazon.ecommerce.services.users.UserService;
 
@@ -28,6 +29,11 @@ public class UserController {
     @GetMapping
     public List<User> getAllUsers(){
         return userService.getAllUsers();
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody UserCreateUpdateDto dto){
+        return userService.verify(dto);
     }
 
     @PostMapping("/register")
