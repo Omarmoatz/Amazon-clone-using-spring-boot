@@ -1,7 +1,6 @@
 package com.amazon.ecommerce.services.users;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
