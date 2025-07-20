@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.amazon.ecommerce.services.users.UserDetailService;
 
@@ -26,13 +27,18 @@ public class SecurityConfig {
     @Autowired
     private UserDetailService userDetailService;
 
+    @Autowired
+    private JwtFilter jwtFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(customizer -> customizer.disable())
+        return http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(request -> request
                     .requestMatchers("/users/login", "/users/register").permitAll()
                     .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
