@@ -11,42 +11,51 @@ import javax.crypto.KeyGenerator;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class JwtService {
 
-    public String generateToken(String username) {
-        var claims = new HashMap<String, Object>();
-        return Jwts.builder()
-                .addClaims(claims)
-                .setSubject(username)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 60))
-                .signWith(getKey())
-                .compact();
+    private Key key;
+
+    public JwtService(@Value("${jwt.secret}") String secret) {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private Key getKey(){
-        try {
-            var genKey = KeyGenerator.getInstance("hmacSHA256").generateKey();
-            var secretKey = Base64.getEncoder().encodeToString(genKey.getEncoded());
-            var keyBytes = Decoders.BASE64.decode(secretKey);
-            return Keys.hmacShaKeyFor(keyBytes);
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException();
-        }
+    public String generateToken(String username) {
+        return Jwts.builder()
+            .setSubject(username)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))  // 10 hours 
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
     }
 
     public String extractUsername(String token) {
-        return "";
+        return Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody()
+            .getSubject();
     }
 
-    public boolean validate(String token, UserDetails userDetail) {
-        return true;
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
     }
 
 }
