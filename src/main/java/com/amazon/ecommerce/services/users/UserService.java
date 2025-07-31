@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.amazon.ecommerce.dto.user.LoginDto;
 import com.amazon.ecommerce.dto.user.UserCreateDto;
 import com.amazon.ecommerce.dto.user.UserRetrieveDto;
 import com.amazon.ecommerce.dto.user.UserUpdateDto;
@@ -30,12 +31,12 @@ public class UserService implements IUserService {
 
 
     @Override
-    public String verify(UserCreateDto userCreateDto) {
+    public String verify(LoginDto dto) {
         var authentication = auth.authenticate(new UsernamePasswordAuthenticationToken(
-                userCreateDto.getUsername(), userCreateDto.getPassword()));
+                dto.getUsername(), dto.getPassword()));
 
         if (authentication.isAuthenticated())
-            return jwtService.generateToken(userCreateDto.getUsername());
+            return jwtService.generateToken(dto.getUsername());
 
         return "Login failed";
     }

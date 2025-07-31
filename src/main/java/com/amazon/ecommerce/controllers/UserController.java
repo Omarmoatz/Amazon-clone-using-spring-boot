@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.amazon.ecommerce.dto.user.LoginDto;
 import com.amazon.ecommerce.dto.user.UserCreateDto;
 import com.amazon.ecommerce.dto.user.UserRetrieveDto;
 import com.amazon.ecommerce.responses.ApiResponse;
@@ -32,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserCreateDto dto){
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDto dto){
         var token = userService.verify(dto);
         return ResponseEntity.ok(new ApiResponse("success", token)); 
     }
