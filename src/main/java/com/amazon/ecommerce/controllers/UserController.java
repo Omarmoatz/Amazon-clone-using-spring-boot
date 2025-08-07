@@ -1,5 +1,8 @@
 package com.amazon.ecommerce.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,9 +36,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginDto dto){
-        var token = userService.verify(dto);
-        return ResponseEntity.ok(new ApiResponse("success", token)); 
+    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid LoginDto dto){
+        return new ResponseEntity<>( userService.verify(dto), HttpStatus.OK); 
     }
 
     @PostMapping("/register")
