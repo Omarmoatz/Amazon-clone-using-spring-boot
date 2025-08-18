@@ -10,18 +10,19 @@ import com.amazon.ecommerce.models.UserPrincipal;
 import com.amazon.ecommerce.repository.UserRepository;
 
 @Service
-public class UserDetailService implements UserDetailsService{
+public class UserDetailService implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = userRepository.findUserByUsername(username);
-        if(user == null){
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("user not found wth username " + username));
+        if (user == null) {
             throw new UsernameNotFoundException("User Not Found");
         }
         return new UserPrincipal(user);
     }
-    
+
 }

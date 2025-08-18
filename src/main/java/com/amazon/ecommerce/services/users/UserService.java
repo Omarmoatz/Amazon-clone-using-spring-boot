@@ -40,7 +40,6 @@ public class UserService implements IUserService {
         var authentication = auth.authenticate(new UsernamePasswordAuthenticationToken(
                 dto.getUsername(), dto.getPassword()));
         
-            
         if (!authentication.isAuthenticated())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "login Failed");
             
@@ -52,9 +51,15 @@ public class UserService implements IUserService {
 
     @Override
     public UserRetrieveDto register(UserCreateDto request) {
-        if (request.getConfirmPassword() != request.getPassword()){
+        if (userRepository.findByEmail(request.getEmail()).isPresent())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is already registered.");
+        
+        if (userRepository.findByUsername(request.getUsername()).isPresent())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is already taken.");
+
+        if (!request.getPassword().equals(request.getConfirmPassword()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match"); 
-        }
+        
         var user = modelMapper.map(request, User.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
@@ -76,22 +81,18 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUser(Long userId) {
+        getUserById(userId);
         userRepository.deleteById(userId);
     }
 
     @Override
     public User updateUser(UserUpdateDto request, Long userId) {
-
         var oldUser = getUserById(userId);
-
         // var userObj = modelMapper.map(request, User.class);
 
         oldUser.setUsername(request.getUsername());
         oldUser.setEmail(request.getEmail());
-
-        var user = userRepository.save(oldUser);
-
-        return user;
+        return userRepository.save(oldUser);
     }
 
 }
