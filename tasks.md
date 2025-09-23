@@ -1,5 +1,5 @@
 register endpoint
-    make username , email unique
+    make username , email unique  [---x---]
 
 
     
