@@ -11,19 +11,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
     
-    private static final String QUEUE_NAME = "myQueue";
-    private static final String EXCHANGE_NAME = "myExchange";
-    private static final String ROUTING_KEY = "myRoutingKey";
+    public static final String QUEUE_NAME = "myQueue";
+    public static final String EXCHANGE_NAME = "myExchange";
+    public static final String ROUTING_KEY = "myRoutingKey";
 
     @Bean
     public Queue queue() {
         return new Queue(QUEUE_NAME, true);
     }
 
+    @Bean
     public DirectExchange exchange(){
         return new DirectExchange(EXCHANGE_NAME);
     }
 
+    @Bean
     public Binding binding(Queue queue, DirectExchange exchange){
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
     }
