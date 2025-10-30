@@ -13,6 +13,6 @@ public class RabbitMQProducer {
     private RabbitTemplate rabbitTemplate;
 
     public void sendMessage(String message){
-        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, RabbitMQConfig.ROUTING_KEY, message);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.DIRECT_EXCHANGE, RabbitMQConfig.DIRECT_ROUTING_KEY, message);
     }
 }
