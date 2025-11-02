@@ -26,9 +26,9 @@ public class RabbitMQConfig {
     public static final String FANOUT_Q2 = "fanoutQ2";
     
     // topic queue names 
-    public static final String TOPIC_Q1 = "topicErrorQ";
-    public static final String TOPIC_Q2 = "topicInfoQ";
-    public static final String TOPIC_Q3 = "topicAllQ";
+    public static final String ERROR_TOPIC_Q = "topicErrorQ";
+    public static final String INFO_TOPIC_Q = "topicInfoQ";
+    public static final String ALL_TOPIC_Q = "topicAllQ";
 
     // routing keys
     public static final String DIRECT_ROUTING_KEY = "directKey";
@@ -76,15 +76,15 @@ public class RabbitMQConfig {
 
     @Bean
     Queue topicQ1(){
-        return new Queue(TOPIC_Q1);
+        return new Queue(ERROR_TOPIC_Q);
     }
     @Bean
     Queue topicQ2(){
-        return new Queue(TOPIC_Q2);
+        return new Queue(INFO_TOPIC_Q);
     }
     @Bean
     Queue topicQ3(){
-        return new Queue(TOPIC_Q3);
+        return new Queue(ALL_TOPIC_Q);
     }
 
 
@@ -98,7 +98,6 @@ public class RabbitMQConfig {
     Binding bindFanout1(Queue fanoutQ1, FanoutExchange fanoutExchange ){
         return BindingBuilder.bind(fanoutQ1).to(fanoutExchange);
     }
-    
     @Bean
     Binding bindFanout2(Queue fanoutQ2, FanoutExchange fanoutExchange){
         return BindingBuilder.bind(fanoutQ2).to(fanoutExchange);

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amazon.ecommerce.config.RabbitMQConfig;
+import com.amazon.ecommerce.utils.AppUtils;
 
 @Service
 public class RabbitMQProducer {
@@ -20,16 +21,7 @@ public class RabbitMQProducer {
         for(int i=0 ; i<10 ; i++){
             System.out.println("_____sending fanout msg_____ no." + i);
             rabbitTemplate.convertAndSend(RabbitMQConfig.FANOUT_EXCHANGE,"", msg);
-            sleep(2000);
-        }
-    }
-
-    private void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("Thread interrupted while waiting between messages", e);
+            AppUtils.sleep(2000);        
         }
     }
 
