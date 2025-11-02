@@ -57,14 +57,14 @@ public class RabbitMQConfig {
     
     @Bean
     Queue fanoutQ2(){
-        return new Queue(FANOUT_Q1);
+        return new Queue(FANOUT_Q2);
     }
 
 
     // bind exchange with queue--------------------------------- 
     @Bean
-    Binding binding(Queue directQueue, DirectExchange directExchange){
-        return BindingBuilder.bind(directQueue).to(directExchange).with(DIRECT_ROUTING_KEY);
+    Binding binding(Queue directQ1, DirectExchange directExchange){
+        return BindingBuilder.bind(directQ1).to(directExchange).with(DIRECT_ROUTING_KEY);
     }
 
     @Bean
