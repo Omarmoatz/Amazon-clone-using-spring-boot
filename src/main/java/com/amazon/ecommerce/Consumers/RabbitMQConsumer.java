@@ -10,7 +10,7 @@ import com.amazon.ecommerce.config.RabbitMQConfig;
 public class RabbitMQConsumer {
 
     // Direct Consumers ----------------
-    @RabbitListener(queues = RabbitMQConfig.DIRECT_QUEUE1)
+    @RabbitListener(queues = RabbitMQConfig.DIRECT_QUEUE)
     public void consumeOnDirectQ1(String msg){
         System.out.println("------------------------Direct Consumer Received Message------------------------ ");
         System.out.println( msg + " ---from Direct Q 1---");
@@ -43,6 +43,12 @@ public class RabbitMQConsumer {
     public void consumeOnAllTopic(String msg){
         System.out.println("------------------------Consumer Received Message from all topic Q------------------------ ");
         System.out.println( msg + " ---from all topic Q---");
+    }
+    
+    @RabbitListener(queues = RabbitMQConfig.DEAD_Q)
+    public void consumeOnDeadQ(String msg){
+        System.out.println("------------------------Consumer Received Message from Dead Q------------------------ ");
+        System.out.println( msg + " ---from Dead Q---");
     }
     
 }

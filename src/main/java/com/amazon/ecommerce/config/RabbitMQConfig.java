@@ -1,5 +1,8 @@
 package com.amazon.ecommerce.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -16,10 +19,11 @@ public class RabbitMQConfig {
     public static final String DIRECT_EXCHANGE = "directExchange";
     public static final String FANOUT_EXCHANGE = "fanoutExchange";
     public static final String TOPIC_EXCHANGE = "topicExchange";
+    public static final String DLX = "deadLetterExchange";
     
     // direct queues names
-    public static final String DIRECT_QUEUE1 = "directQ1";
-    public static final String DIRECT_QUEUE2 = "directQ2";
+    public static final String DIRECT_QUEUE = "directQ";
+    public static final String DEAD_Q = "deadQ";
 
     // fanout queue names 
     public static final String FANOUT_Q1 = "fanoutQ1";
@@ -54,38 +58,28 @@ public class RabbitMQConfig {
     TopicExchange topicExchange(){
         return new TopicExchange(TOPIC_EXCHANGE);
     }
+    
+    @Bean
+    TopicExchange dLX(){
+        return new TopicExchange(DLX);
+    }
 
     // declare queues ------------------------------
-    @Bean
-    Queue directQ1() {
-        return new Queue(DIRECT_QUEUE1, true);
+    @Bean Queue directQ1(){
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-dead-letter-exchange", DLX);
+        args.put("x-dead-letter-routing-key", "dead");
+        args.put("x-message-ttl", 10000);
+        return new Queue(DIRECT_QUEUE, true, false, false, args);
     }
-    @Bean
-    Queue directQ2() {
-        return new Queue(DIRECT_QUEUE2, true);
-    }
+    @Bean Queue deadQ(){return new Queue(DEAD_Q, true);}
 
-    @Bean
-    Queue fanoutQ1(){
-        return new Queue(FANOUT_Q1);
-    }
-    @Bean
-    Queue fanoutQ2(){
-        return new Queue(FANOUT_Q2);
-    }
+    @Bean Queue fanoutQ1(){return new Queue(FANOUT_Q1);}
+    @Bean Queue fanoutQ2(){return new Queue(FANOUT_Q2);}
 
-    @Bean
-    Queue topicQ1(){
-        return new Queue(ERROR_TOPIC_Q);
-    }
-    @Bean
-    Queue topicQ2(){
-        return new Queue(INFO_TOPIC_Q);
-    }
-    @Bean
-    Queue topicQ3(){
-        return new Queue(ALL_TOPIC_Q);
-    }
+    @Bean Queue topicQ1(){return new Queue(ERROR_TOPIC_Q);}
+    @Bean Queue topicQ2(){return new Queue(INFO_TOPIC_Q);}
+    @Bean Queue topicQ3(){return new Queue(ALL_TOPIC_Q);}
 
 
     // bind exchange with queue--------------------------------- 
@@ -114,6 +108,11 @@ public class RabbitMQConfig {
     @Bean
     Binding bindTopic3(Queue topicQ3, TopicExchange topicExchange){
         return BindingBuilder.bind(topicQ3).to(topicExchange).with(TOPIC_ALL_KEY);
+    }
+    
+    @Bean
+    Binding bindDeadQ(Queue deadQ, TopicExchange dLX){
+        return BindingBuilder.bind(deadQ).to(dLX).with("dead");
     }
 
 
