@@ -1,7 +1,6 @@
 package com.amazon.ecommerce.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,15 +13,21 @@ public class RabbitMQController {
     @Autowired
     private RabbitMQProducer rabbitMQProducer; 
 
-    @GetMapping("/send")
+    @PostMapping("/send/direct")
     public String sendConfirmMessage (@RequestBody String message){
-        rabbitMQProducer.sendDirectMessage(message);
+        rabbitMQProducer.sendDirectMsg(message);
         return "Direct Message sent to RabbitMQ ---- " + message;
     }
 
-    @PostMapping("/send")
-    public String sendFanoutMsg(@RequestBody String message){
-        rabbitMQProducer.sendFanoutMessage(message);
+    @PostMapping("/send/fanout")
+    public String sendFanoutMessage(@RequestBody String message){
+        rabbitMQProducer.sendFanoutMsg(message);
         return "Fanout Message sent to RabbitMQ ---- " + message;
+    }
+    
+    @PostMapping("/send/topic")
+    public String sendTopicMessage(@RequestBody String message){
+        rabbitMQProducer.sendTopicMsg(message);
+        return "topic Message sent to RabbitMQ ---- " + message;
     }
 }
